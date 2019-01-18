@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>BANCA TSS</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            button {
+                color: #5091ca;
+            }
+            #banca {
+                display:none;
+            }
+            #login {
+                display:block;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="login">
+            <h2>LOGIN</h2>
+            <input type="text" id="in_usr" placeholder="ins.username" /><br/>
+            <input type="password" id="in_pwd" placeholder="ins.password" /><br/>
+            <input type="text" id="in_tkn" placeholder="ins.token" /><br/>
+            <button onclick="loginUser()">Login</button>
+
+
+        </div> 
+        <div id="banca">
+
+            <div id="div_1" style="font-size: 30px;" > BANCA TSS conto corrente di <span id="sp_login">???</span></div>
+            <br/>
+            Inserire nome e cognome <input id="in_nome" type="text" value="" placeholder="Utente"/>
+            <button id="bt_login" onclick="inserisciUtente()">Conferma</button>
+            <div id="div_saldo"> Saldo corrente: <span id="sp_saldo">0</span> €
+            </div>
+            <div id="div_movimenti"> Array movimenti: <span id="sp_movimenti"></span> €
+            </div>
+            <br/>
+            <div class="versamenti">
+                <h3>VERSAMENTI</h3>
+                <!--h3 titolo 3 serve per renderlo evidente e mi manda a capo-->
+                <input type="text" id="in_vers" value="" placeholder="importo da versare" /> 
+                <button id="bt_vers" onclick="versaImporto()">Versa Importo
+                </button>
+            </div>
+            <div class="prelievi">
+                <h3>PRELIEVI</h3>
+                <!--h3 titolo 3 serve per renderlo evidente e mi manda a capo-->
+                <input type="text" id="in_prev" value="" placeholder="importo da prelevare" /> 
+                <button id="bt_prev" onclick="prelevaImporto()">
+                    Preleva Importo
+                </button>
+                <div id="div_notifiche">area notifiche: <span id="sp_notif">nulla da segnalare</span></div>
+                <div id="div_mov">
+                    <h3>MOVIMENTI</h3>
+                    <table>
+                        <tr>
+                            <th>Versamenti</th><th>Prelievi</th>
+                        </tr>
+                        <tr> <!--contenuto del td<br>-<br/>-->
+                            <td id="td_vers"></td>
+                            <td id="td_prev"></td>
+                        </tr>
+                    </table>
+                </div>  
+
+            </div>  
+        </div>
+    </body>
+</html>
+
+<script>
+
+
+    var ar_movimenti = [];
+
+    function inserisciUtente() {
+        var txlogin = document.getElementById("sp_login").innerHTML;
+        var txnominativo = document.getElementById("in_nome").value;
+        document.getElementById("sp_login").innerHTML = txnominativo;
+        document.getElementById("in_nome").value = "";
+
+    }
+
+    function print_mov() {
+        let text = "";
+        let miosaldo = 0;
+        let maxver = 0;
+        let colore="";
+        for (i = 0; i < ar_movimenti.length; i++) {
+            // for (){} nelle tonde tre elementi separati da ; i<della lunghezza array segnanto con legth   
+            if (ar_movimenti [i] > 0){
+                colore = "black";
+                
+           
+                segno = "+";
+                 }
+            else {
+                segno = "";
+                colore = "red";
+                }
+            if (ar_movimenti[i] > maxver)
+                maxver = ar_movimenti[i];
+
+            text = text + "<br><b>#" + (i + 1) + " </b> <font = '" + colore + "'>" + segno + ar_movimenti[i] + "</font>";
+            miosaldo += ar_movimenti[i];
+        }
+
+        text += "<br><b>SALDO : </b>" + miosaldo;
+        text += "<br><b>max versamento : </b>" + maxver;
+        
+
+
+        return text;
+
+
+
+
+
+
+    }
+
+    function loginUser() {
+        var okusr = "cla";
+        var okpwd = "meil";
+        var oktkn = "ciao";
+
+        var txusr = document.getElementById("in_usr").value;
+        var txpwd = document.getElementById("in_pwd").value;
+        var txtkn = document.getElementById("in_tkn").value;
+
+        if ((txusr == okusr && txpwd == okpwd) || txtkn == oktkn) {
+            //cosa fare se è vero e quindi ok &&=and ||=or
+            alert("ok ti faccio entrare");
+            document.getElementById("banca").style.display = "block";
+            document.getElementById("login").style.display = "none";
+
+
+        } else {
+            //cosa fare se errato
+            alert("dati non validi");
+
+
+        }
+    }
+    function versaImporto() {
+        //se in_vers c'è qualsa di errato non fare niente ed avvertire
+        /*
+         if (condizione) {
+         //cosa fare se vero
+         }
+         else {
+         //cosa fare se falso
+         }
+         */
+        //metto la frase ad esempio "123" dentro a saldo current
+        var txsaldo_current = document.getElementById("sp_saldo").innerHTML;
+        //metto la frase ad esempio "123" dentro a importo current
+        var tximporto_current = document.getElementById("in_vers").value;
+        //var saldo=saldo_current*1;
+        var saldo = Number.parseFloat(txsaldo_current);
+
+        if (isNaN(tximporto_current)) {
+            alert("non hai scritto un numero riprova!");
+            document.getElementById("in_vers").value = "";
+
+        } else {
+            var importo = Number.parseFloat(tximporto_current);
+
+            if (importo > 0) {
+                //aggiungo movimento ad ar_movimenti
+                ar_movimenti.push(importo);
+
+
+
+
+                //sommo finalmente due numeri e non due testi
+                var nuovo_saldo = saldo + importo;
+                //impostoil nuovo valore dello span sp_saldo
+                document.getElementById("sp_saldo").innerHTML = nuovo_saldo;
+                document.getElementById("sp_movimenti").innerHTML = print_mov();
+                document.getElementById("in_vers").value = "";
+
+                //sistemo movimenti
+                //leggo il contenuto della cella td_vers
+                var txtd_vers = document.getElementById("td_vers").innerHTML;
+                //txtdtxtd_vers = "123<br>" + "200" + "<br/>"
+                //gli aggiungo il nuovo importo + a capo br
+                txtd_vers = txtd_vers + tximporto_current + "<br/>";
+                //idem per td_prev ma solo "-<br>"
+                var txtd_prev = document.getElementById("td_prev").innerHTML;
+                txtd_prev = txtd_prev + "-<br/>";
+                //visualizzo i nuovi dati nelle celle td
+                document.getElementById("td_vers").innerHTML = txtd_vers;
+                document.getElementById("td_prev").innerHTML = txtd_prev;
+
+            } else {
+                alert("hai scritto un numero non valido!");
+                document.getElementById("in_vers").value = "";
+            }
+
+        }
+    }
+
+
+
+    function prelevaImporto() {
+        //metto la frase ad esempio "123" dentro a saldo current
+        var txsaldo_current = document.getElementById("sp_saldo").innerHTML;
+        //metto la frase ad esempio "123" dentro a importo current
+        var tximporto_current = document.getElementById("in_prev").value;
+        //var saldo
+        var saldo = Number.parseFloat(txsaldo_current);
+        var importo = Number.parseFloat(tximporto_current);
+        ar_movimenti.push(-importo);
+
+
+
+        //sommo finalmente due numeri e non due testi
+        var nuovo_saldo = saldo - importo;
+        //impostoil nuovo valore dello span sp_saldo
+        document.getElementById("sp_saldo").innerHTML = nuovo_saldo;
+        document.getElementById("sp_movimenti").innerHTML = print_mov();
+        document.getElementById("in_prev").value = "";
+
+        //sistemo movimenti
+        //leggo il contenuto della cella td_vers
+        var txtd_vers = document.getElementById("td_vers").innerHTML;
+        //txtdtxtd_vers = "123<br>" + "200" + "<br/>"
+        //gli aggiungo il nuovo importo + a capo br
+        txtd_vers = txtd_vers + "-<br/>";
+        //idem per td_prev ma solo "-<br>"
+        var txtd_prev = document.getElementById("td_prev").innerHTML;
+        txtd_prev = txtd_prev + tximporto_current + "<br/>";
+        //visualizzo i nuovi dati nelle celle td
+        document.getElementById("td_vers").innerHTML = txtd_vers;
+        document.getElementById("td_prev").innerHTML = txtd_prev;
+
+
+    }
+
+
+
+
+
+
+
+</script>
